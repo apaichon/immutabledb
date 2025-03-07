@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600">
+  <!-- Background -->
+  <rect width="900" height="600" fill="#f8f9fa" rx="10" ry="10"/>
+  
+  <!-- Title -->
+  <text x="450" y="50" font-family="Arial, sans-serif" font-size="28" font-weight="bold" text-anchor="middle" fill="#212529">Database Lock Mechanisms</text>
+  <text x="450" y="85" font-family="Arial, sans-serif" font-size="20" text-anchor="middle" fill="#495057">SELECT FOR UPDATE vs SELECT FOR READING</text>
+  
+  <!-- Divider -->
+  <line x1="450" y1="100" x2="450" y2="580" stroke="#dee2e6" stroke-width="2" stroke-dasharray="5,5"/>
+  
+  <!-- SELECT FOR UPDATE Section -->
+  <text x="225" y="130" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#0062cc">SELECT FOR UPDATE</text>
+  
+  <!-- SELECT FOR READING Section -->
+  <text x="675" y="130" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#28a745">SELECT FOR READING</text>
+  
+  <!-- Lock Icon for UPDATE -->
+  <rect x="175" y="150" width="100" height="70" rx="10" ry="10" fill="#0062cc" opacity="0.2"/>
+  <circle cx="225" cy="170" r="15" fill="none" stroke="#0062cc" stroke-width="3"/>
+  <rect x="215" y="170" width="20" height="25" rx="2" ry="2" fill="#0062cc"/>
+  <rect x="220" y="170" width="10" height="15" fill="#f8f9fa"/>
+  
+  <!-- Lock Icon for READING -->
+  <rect x="625" y="150" width="100" height="70" rx="10" ry="10" fill="#28a745" opacity="0.2"/>
+  <circle cx="675" cy="170" r="15" fill="none" stroke="#28a745" stroke-width="3"/>
+  <rect x="665" y="170" width="20" height="25" rx="2" ry="2" fill="#28a745" opacity="0.5"/>
+  <rect x="670" y="170" width="10" height="15" fill="#f8f9fa"/>
+  
+  <!-- SELECT FOR UPDATE Description -->
+  <rect x="50" y="240" width="350" height="100" rx="10" ry="10" fill="#0062cc" opacity="0.1" stroke="#0062cc" stroke-width="1"/>
+  <text x="225" y="265" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#0062cc">Exclusive (Write) Lock</text>
+  <text x="70" y="290" font-family="Arial, sans-serif" font-size="14" fill="#212529">• Prevents other transactions from modifying or</text>
+  <text x="70" y="310" font-family="Arial, sans-serif" font-size="14" fill="#212529">  acquiring locks on the selected rows</text>
+  <text x="70" y="330" font-family="Arial, sans-serif" font-size="14" fill="#212529">• Used for data that will be updated shortly after</text>
+  
+  <!-- SELECT FOR READING Description -->
+  <rect x="500" y="240" width="350" height="100" rx="10" ry="10" fill="#28a745" opacity="0.1" stroke="#28a745" stroke-width="1"/>
+  <text x="675" y="265" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#28a745">Shared (Read) Lock</text>
+  <text x="520" y="290" font-family="Arial, sans-serif" font-size="14" fill="#212529">• Allows other transactions to read the same data</text>
+  <text x="520" y="310" font-family="Arial, sans-serif" font-size="14" fill="#212529">• Prevents other transactions from modifying data</text>
+  <text x="520" y="330" font-family="Arial, sans-serif" font-size="14" fill="#212529">• Multiple transactions can hold read locks</text>
+  
+  <!-- Database Visualization for UPDATE -->
+  <rect x="100" y="360" width="250" height="120" rx="5" ry="5" fill="#ffffff" stroke="#6c757d" stroke-width="2"/>
+  <text x="225" y="380" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#212529">Database Table</text>
+  
+  <!-- Table rows for UPDATE -->
+  <rect x="120" y="390" width="210" height="25" fill="#0062cc" opacity="0.3" stroke="#0062cc" stroke-width="1"/>
+  <text x="135" y="408" font-family="Arial, sans-serif" font-size="14" fill="#212529">id: 1</text>
+  <text x="210" y="408" font-family="Arial, sans-serif" font-size="14" fill="#212529">name: "Row 1"</text>
+  <image x="310" y="395" width="15" height="15" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTE4IDhINlY2aDEydjJ6IiBmaWxsPSIjMDA2MmNjIi8+PHBhdGggZD0iTTE4IDEwSDZWOGgxMnYyeiIgZmlsbD0iIzAwNjJjYyIvPjxwYXRoIGQ9Ik0xOCAxMkg2di0yaDEydjJ6IiBmaWxsPSIjMDA2MmNjIi8+PC9zdmc+"/>
+  
+  <rect x="120" y="415" width="210" height="25" fill="#ffffff" stroke="#dee2e6" stroke-width="1"/>
+  <text x="135" y="433" font-family="Arial, sans-serif" font-size="14" fill="#212529">id: 2</text>
+  <text x="210" y="433" font-family="Arial, sans-serif" font-size="14" fill="#212529">name: "Row 2"</text>
+  
+  <rect x="120" y="440" width="210" height="25" fill="#ffffff" stroke="#dee2e6" stroke-width="1"/>
+  <text x="135" y="458" font-family="Arial, sans-serif" font-size="14" fill="#212529">id: 3</text>
+  <text x="210" y="458" font-family="Arial, sans-serif" font-size="14" fill="#212529">name: "Row 3"</text>
+  
+  <!-- Database Visualization for READING -->
+  <rect x="550" y="360" width="250" height="120" rx="5" ry="5" fill="#ffffff" stroke="#6c757d" stroke-width="2"/>
+  <text x="675" y="380" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#212529">Database Table</text>
+  
+  <!-- Table rows for READING -->
+  <rect x="570" y="390" width="210" height="25" fill="#28a745" opacity="0.2" stroke="#28a745" stroke-width="1"/>
+  <text x="585" y="408" font-family="Arial, sans-serif" font-size="14" fill="#212529">id: 1</text>
+  <text x="660" y="408" font-family="Arial, sans-serif" font-size="14" fill="#212529">name: "Row 1"</text>
+  <image x="760" y="395" width="15" height="15" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTEyIDRMMiAxMmgydjZoMTZ2LTZoMkwxMiA0em00IDEwSDh2LTRoOHY0eiIgZmlsbD0iIzI4YTc0NSIvPjwvc3ZnPg=="/>
+  
+  <rect x="570" y="415" width="210" height="25" fill="#28a745" opacity="0.2" stroke="#28a745" stroke-width="1"/>
+  <text x="585" y="433" font-family="Arial, sans-serif" font-size="14" fill="#212529">id: 2</text>
+  <text x="660" y="433" font-family="Arial, sans-serif" font-size="14" fill="#212529">name: "Row 2"</text>
+  <image x="760" y="420" width="15" height="15" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTEyIDRMMiAxMmgydjZoMTZ2LTZoMkwxMiA0em00IDEwSDh2LTRoOHY0eiIgZmlsbD0iIzI4YTc0NSIvPjwvc3ZnPg=="/>
+  
+  <rect x="570" y="440" width="210" height="25" fill="#ffffff" stroke="#dee2e6" stroke-width="1"/>
+  <text x="585" y="458" font-family="Arial, sans-serif" font-size="14" fill="#212529">id: 3</text>
+  <text x="660" y="458" font-family="Arial, sans-serif" font-size="14" fill="#212529">name: "Row 3"</text>
+  
+  <!-- Concurrency Behavior for UPDATE -->
+  <rect x="50" y="500" width="350" height="75" rx="10" ry="10" fill="#0062cc" opacity="0.1" stroke="#0062cc" stroke-width="1"/>
+  <text x="225" y="525" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#0062cc">Concurrency Behavior</text>
+  <text x="70" y="550" font-family="Arial, sans-serif" font-size="14" fill="#212529">• Other SELECTs must wait for lock to be released</text>
+  <text x="70" y="570" font-family="Arial, sans-serif" font-size="14" fill="#212529">• May lead to deadlocks if not managed properly</text>
+  
+  <!-- Concurrency Behavior for READING -->
+  <rect x="500" y="500" width="350" height="75" rx="10" ry="10" fill="#28a745" opacity="0.1" stroke="#28a745" stroke-width="1"/>
+  <text x="675" y="525" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#28a745">Concurrency Behavior</text>
+  <text x="520" y="550" font-family="Arial, sans-serif" font-size="14" fill="#212529">• Multiple readers can access simultaneously</text>
+  <text x="520" y="570" font-family="Arial, sans-serif" font-size="14" fill="#212529">• Writers must wait for all read locks to be released</text>
+</svg>

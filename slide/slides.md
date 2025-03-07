@@ -6,7 +6,7 @@ highlighter: shiki
 lineNumbers: false
 info: |
   ## Immutable Database Design with Postgres
-  A comprehensive 3-hour course on implementing immutable patterns in PostgreSQL
+  A comprehensive course on implementing immutable patterns in PostgreSQL
 drawings:
   persist: false
 transition: slide-left
@@ -15,7 +15,7 @@ title: Immutable Database Design with Postgres
 
 # Immutable Database Design with Postgres
 
-A 3-hour comprehensive course
+A comprehensive course on implementing immutable patterns in PostgreSQL
 
 <div class="pt-12">
   <span @click="$slidev.nav.next" class="px-2 py-1 rounded cursor-pointer" hover="bg-white bg-opacity-10">

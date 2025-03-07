@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
+  <!-- Background and border -->
+  <rect width="800" height="500" fill="#f8f9fa" rx="10" ry="10" stroke="#d6d8db" stroke-width="2"/>
+  
+  <!-- Title -->
+  <text x="400" y="40" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#343a40">Immutable Database Design: Pros vs Cons</text>
+  
+  <!-- Divider line -->
+  <line x1="400" y1="70" x2="400" y2="480" stroke="#d6d8db" stroke-width="2"/>
+  
+  <!-- Pros Header -->
+  <rect x="20" y="70" width="360" height="40" rx="5" ry="5" fill="#28a745" opacity="0.2"/>
+  <text x="200" y="95" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#155724">PROS</text>
+  
+  <!-- Cons Header -->
+  <rect x="420" y="70" width="360" height="40" rx="5" ry="5" fill="#dc3545" opacity="0.2"/>
+  <text x="600" y="95" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#721c24">CONS</text>
+  
+  <!-- Pros Categories -->
+  <!-- Data Integrity -->
+  <rect x="30" y="130" width="340" height="70" rx="5" ry="5" fill="#28a745" opacity="0.1"/>
+  <text x="40" y="150" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#155724">Data Integrity and Auditability</text>
+  <text x="45" y="170" font-family="Arial, sans-serif" font-size="12" fill="#155724">• Append-only historical record</text>
+  <text x="45" y="190" font-family="Arial, sans-serif" font-size="12" fill="#155724">• Natural audit trails and data lineage</text>
+  
+  <!-- Simplified Architecture -->
+  <rect x="30" y="210" width="340" height="70" rx="5" ry="5" fill="#28a745" opacity="0.1"/>
+  <text x="40" y="230" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#155724">Simplified System Architecture</text>
+  <text x="45" y="250" font-family="Arial, sans-serif" font-size="12" fill="#155724">• No complex update logic or locks</text>
+  <text x="45" y="270" font-family="Arial, sans-serif" font-size="12" fill="#155724">• More predictable system behavior</text>
+  
+  <!-- Scalability -->
+  <rect x="30" y="290" width="340" height="70" rx="5" ry="5" fill="#28a745" opacity="0.1"/>
+  <text x="40" y="310" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#155724">Enhanced Scalability</text>
+  <text x="45" y="330" font-family="Arial, sans-serif" font-size="12" fill="#155724">• High write throughput with simpler concurrency</text>
+  <text x="45" y="350" font-family="Arial, sans-serif" font-size="12" fill="#155724">• Efficient distribution and caching</text>
+  
+  <!-- Time-Travel Queries -->
+  <rect x="30" y="370" width="340" height="70" rx="5" ry="5" fill="#28a745" opacity="0.1"/>
+  <text x="40" y="390" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#155724">Time-Travel Queries</text>
+  <text x="45" y="410" font-family="Arial, sans-serif" font-size="12" fill="#155724">• Point-in-time recovery and analysis</text>
+  <text x="45" y="430" font-family="Arial, sans-serif" font-size="12" fill="#155724">• Historical state and temporal queries</text>
+  
+  <!-- Cons Categories -->
+  <!-- Storage -->
+  <rect x="430" y="130" width="340" height="70" rx="5" ry="5" fill="#dc3545" opacity="0.1"/>
+  <text x="440" y="150" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#721c24">Storage Requirements</text>
+  <text x="445" y="170" font-family="Arial, sans-serif" font-size="12" fill="#721c24">• Higher storage consumption</text>
+  <text x="445" y="190" font-family="Arial, sans-serif" font-size="12" fill="#721c24">• Increased backup and maintenance costs</text>
+  
+  <!-- Query Complexity -->
+  <rect x="430" y="210" width="340" height="70" rx="5" ry="5" fill="#dc3545" opacity="0.1"/>
+  <text x="440" y="230" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#721c24">Query Complexity</text>
+  <text x="445" y="250" font-family="Arial, sans-serif" font-size="12" fill="#721c24">• Complex queries to reconstruct current state</text>
+  <text x="445" y="270" font-family="Arial, sans-serif" font-size="12" fill="#721c24">• Potential performance overhead for reads</text>
+  
+  <!-- Learning Curve -->
+  <rect x="430" y="290" width="340" height="70" rx="5" ry="5" fill="#dc3545" opacity="0.1"/>
+  <text x="440" y="310" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#721c24">Development Learning Curve</text>
+  <text x="445" y="330" font-family="Arial, sans-serif" font-size="12" fill="#721c24">• Shift from traditional CRUD operations</text>
+  <text x="445" y="350" font-family="Arial, sans-serif" font-size="12" fill="#721c24">• Challenges with standard ORM frameworks</text>
+  
+  <!-- Operational Challenges -->
+  <rect x="430" y="370" width="340" height="70" rx="5" ry="5" fill="#dc3545" opacity="0.1"/>
+  <text x="440" y="390" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#721c24">Operational Challenges</text>
+  <text x="445" y="410" font-family="Arial, sans-serif" font-size="12" fill="#721c24">• Compliance with data deletion requirements</text>
+  <text x="445" y="430" font-family="Arial, sans-serif" font-size="12" fill="#721c24">• Complex data migrations and state views</text>
+</svg>
