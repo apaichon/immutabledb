@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 700">
+  <!-- Background -->
+  <rect width="900" height="700" fill="#f8f9fa" rx="10" ry="10" stroke="#dee2e6" stroke-width="2"/>
+  
+  <!-- Title -->
+  <text x="450" y="40" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#212529">Materialized View Pattern Flow</text>
+  
+  <!-- Source Tables Section -->
+  <rect x="50" y="70" width="800" height="200" rx="5" ry="5" fill="#e9ecef" stroke="#adb5bd" stroke-width="2"/>
+  <text x="450" y="95" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#212529">Source Tables (Event Sources)</text>
+  
+  <!-- Products Table -->
+  <rect x="80" y="120" width="170" height="130" rx="5" ry="5" fill="white" stroke="#6c757d" stroke-width="1"/>
+  <rect x="80" y="120" width="170" height="30" rx="5" ry="5" fill="#0d6efd" opacity="0.2"/>
+  <text x="165" y="140" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#0d6efd">products</text>
+  <text x="90" y="165" font-family="monospace" font-size="10" fill="#495057">product_id</text>
+  <text x="90" y="180" font-family="monospace" font-size="10" fill="#495057">name</text>
+  <text x="90" y="195" font-family="monospace" font-size="10" fill="#495057">description</text>
+  <text x="90" y="210" font-family="monospace" font-size="10" fill="#495057">base_price</text>
+  <text x="90" y="225" font-family="monospace" font-size="10" fill="#495057">created_at</text>
+  
+  <!-- Product Events Table -->
+  <rect x="270" y="120" width="170" height="130" rx="5" ry="5" fill="white" stroke="#6c757d" stroke-width="1"/>
+  <rect x="270" y="120" width="170" height="30" rx="5" ry="5" fill="#fd7e14" opacity="0.2"/>
+  <text x="355" y="140" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#fd7e14">product_events</text>
+  <text x="280" y="165" font-family="monospace" font-size="10" fill="#495057">id</text>
+  <text x="280" y="180" font-family="monospace" font-size="10" fill="#495057">product_id</text>
+  <text x="280" y="195" font-family="monospace" font-size="10" fill="#495057">event_type</text>
+  <text x="280" y="210" font-family="monospace" font-size="10" fill="#495057">event_data (JSONB)</text>
+  <text x="280" y="225" font-family="monospace" font-size="10" fill="#495057">occurred_at</text>
+  
+  <!-- Inventory Events Table -->
+  <rect x="460" y="120" width="170" height="130" rx="5" ry="5" fill="white" stroke="#6c757d" stroke-width="1"/>
+  <rect x="460" y="120" width="170" height="30" rx="5" ry="5" fill="#20c997" opacity="0.2"/>
+  <text x="545" y="140" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#20c997">inventory_events</text>
+  <text x="470" y="165" font-family="monospace" font-size="10" fill="#495057">id</text>
+  <text x="470" y="180" font-family="monospace" font-size="10" fill="#495057">product_id</text>
+  <text x="470" y="195" font-family="monospace" font-size="10" fill="#495057">event_type</text>
+  <text x="470" y="210" font-family="monospace" font-size="10" fill="#495057">quantity</text>
+  <text x="470" y="225" font-family="monospace" font-size="10" fill="#495057">warehouse_id</text>
+  
+  <!-- Order Items Table -->
+  <rect x="650" y="120" width="170" height="130" rx="5" ry="5" fill="white" stroke="#6c757d" stroke-width="1"/>
+  <rect x="650" y="120" width="170" height="30" rx="5" ry="5" fill="#dc3545" opacity="0.2"/>
+  <text x="735" y="140" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#dc3545">order_items</text>
+  <text x="660" y="165" font-family="monospace" font-size="10" fill="#495057">id</text>
+  <text x="660" y="180" font-family="monospace" font-size="10" fill="#495057">order_id</text>
+  <text x="660" y="195" font-family="monospace" font-size="10" fill="#495057">product_id</text>
+  <text x="660" y="210" font-family="monospace" font-size="10" fill="#495057">quantity</text>
+  <text x="660" y="225" font-family="monospace" font-size="10" fill="#495057">price_per_unit</text>
+  
+  <!-- Materialized View Section -->
+  <rect x="50" y="290" width="800" height="120" rx="5" ry="5" fill="#fff3bf" stroke="#f08c00" stroke-width="2"/>
+  <text x="450" y="315" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#212529">Materialized View</text>
+  
+  <!-- Materialized View Box -->
+  <rect x="80" y="330" width="740" height="60" rx="5" ry="5" fill="white" stroke="#f08c00" stroke-width="1.5"/>
+  <text x="450" y="350" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#f08c00">product_analytics</text>
+  <text x="100" y="370" font-family="monospace" font-size="10" text-anchor="start" fill="#495057">product_id, name, base_price, current_price, current_inventory, units_sold, total_revenue, average_selling_price, last_updated</text>
+  <text x="270" y="385" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#6c757d">Pre-computed data from multiple sources</text>
+  <text x="630" y="385" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#6c757d">Faster queries for complex calculations</text>
+  
+  <!-- Transformation Logic Section -->
+  <rect x="50" y="430" width="800" height="150" rx="5" ry="5" fill="#d3f9d8" stroke="#2b8a3e" stroke-width="2"/>
+  <text x="450" y="455" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#212529">Transformation Logic</text>
+  
+  <!-- CTE Boxes -->
+  <rect x="80" y="475" width="160" height="30" rx="15" ry="15" fill="#2b8a3e" opacity="0.2"/>
+  <text x="160" y="495" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#212529">price_data CTE</text>
+  
+  <rect x="270" y="475" width="160" height="30" rx="15" ry="15" fill="#2b8a3e" opacity="0.2"/>
+  <text x="350" y="495" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#212529">inventory_data CTE</text>
+  
+  <rect x="460" y="475" width="160" height="30" rx="15" ry="15" fill="#2b8a3e" opacity="0.2"/>
+  <text x="540" y="495" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#212529">total_inventory CTE</text>
+  
+  <rect x="650" y="475" width="160" height="30" rx="15" ry="15" fill="#2b8a3e" opacity="0.2"/>
+  <text x="730" y="495" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#212529">sales_data CTE</text>
+  
+  <text x="80" y="535" font-family="Arial, sans-serif" font-size="12" fill="#212529">• Gets current price from</text>
+  <text x="90" y="550" font-family="Arial, sans-serif" font-size="12" fill="#212529">latest price_changed event</text>
+  <text x="270" y="535" font-family="Arial, sans-serif" font-size="12" fill="#212529">• Calculates current stock</text>
+  <text x="280" y="550" font-family="Arial, sans-serif" font-size="12" fill="#212529">from add/remove events</text>
+  <text x="460" y="535" font-family="Arial, sans-serif" font-size="12" fill="#212529">• Sums inventory across</text>
+  <text x="470" y="550" font-family="Arial, sans-serif" font-size="12" fill="#212529">all warehouses</text>
+  <text x="650" y="535" font-family="Arial, sans-serif" font-size="12" fill="#212529">• Aggregates units sold</text>
+  <text x="660" y="550" font-family="Arial, sans-serif" font-size="12" fill="#212529">and total revenue</text>
+  
+  <!-- Refresh Mechanism Section -->
+  <rect x="50" y="600" width="800" height="80" rx="5" ry="5" fill="#d0ebff" stroke="#1971c2" stroke-width="2"/>
+  <text x="450" y="625" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#212529">Refresh Mechanism</text>
+  
+  <!-- Refresh Components -->
+  <rect x="100" y="640" width="240" height="30" rx="5" ry="5" fill="#1971c2" opacity="0.2"/>
+  <text x="220" y="660" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#1971c2">refresh_product_analytics() Function</text>
+  
+  <rect x="380" y="640" width="420" height="30" rx="5" ry="5" fill="#1971c2" opacity="0.2"/>
+  <text x="590" y="660" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#1971c2">Triggers on source tables automatically call refresh function</text>
+  
+  <!-- Connecting Arrows -->
+  <!-- Source to Materialized View -->
+  <line x1="165" y1="250" x2="240" y2="290" stroke="#212529" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+  <line x1="355" y1="250" x2="350" y2="290" stroke="#212529" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+  <line x1="545" y1="250" x2="450" y2="290" stroke="#212529" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+  <line x1="735" y1="250" x2="560" y2="290" stroke="#212529" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+  
+  <!-- Materialized View to Transformation -->
+  <line x1="450" y1="390" x2="450" y2="430" stroke="#212529" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+  
+  <!-- Transformation to Refresh -->
+  <line x1="450" y1="580" x2="450" y2="600" stroke="#212529" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+  
+  <!-- Refresh back to Sources (circular dependency) -->
+  <path d="M 800 640 C 830 640, 850 350, 820 250" fill="none" stroke="#212529" stroke-width="1.5" stroke-dasharray="5,5" marker-end="url(#arrowhead)"/>
+  <text x="840" y="450" font-family="Arial, sans-serif" font-size="12" fill="#6c757d">Automatic refresh</text>
+  <text x="840" y="465" font-family="Arial, sans-serif" font-size="12" fill="#6c757d">when source data</text>
+  <text x="840" y="480" font-family="Arial, sans-serif" font-size="12" fill="#6c757d">changes</text>
+  
+  <!-- Defs for markers -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#212529" />
+    </marker>
+  </defs>
+</svg>

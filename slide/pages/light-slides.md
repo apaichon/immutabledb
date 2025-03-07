@@ -147,8 +147,16 @@ layout: default
 
 # Pattern 1: Event Sourcing
 
-Store all changes to application state as a sequence of events
+<div class="flex justify-center">
+  <img src="/images/immutabledb/event-sourcing-flow.svg" alt="Event Sourcing Flow" class="w-1/2">
+</div>
 
+---
+
+# Event Sourcing: Example Usage
+
+
+<div style="overflow-y: auto; height: 450px;">
 ```sql
 -- Events table to store all domain events
 CREATE TABLE events (
@@ -164,15 +172,7 @@ CREATE TABLE events (
 -- Index for efficient querying by aggregate
 CREATE INDEX idx_events_aggregate ON events(aggregate_type, aggregate_id);
 CREATE INDEX idx_events_created_at ON events(created_at);
-```
 
----
-
-# Event Sourcing: Example Usage
-
-
-<div style="overflow-y: auto; height: 450px;">
-```sql
 -- Inserting a user creation event
 INSERT INTO events (
   aggregate_id, 
@@ -318,6 +318,13 @@ INSERT INTO transaction_log (
 
 # Append-Only Log: Calculating Balance
 
+<div class="flex justify-center">
+  <img src="/images/immutabledb/append-only-log-flow.svg" alt="Append-Only Log Flow" class="w-1/2">
+</div>
+---
+
+# Append-Only Log: Calculating Balance
+
 <div style="overflow-y: auto; height: 450px;">
 
 ```sql
@@ -356,31 +363,91 @@ $$ LANGUAGE plpgsql;
 
 # Pattern 4: Temporal Tables
 
-<div style="overflow-y: auto; height: 450px;">
+<div class="grid grid-cols-2 gap-4">
+<div>
+
+**Key Components:**
+- Valid time periods (valid_from, valid_to)
+- Primary key includes temporal component
+- Never delete or update records
+- Insert new versions for changes
+
+</div>
+<div>
+
+**Benefits:**
+- Complete history tracking
+- Point-in-time queries
+- Audit compliance
+- No data loss
+
+</div>
+</div>
+
+---
+
+# Temporal Tables: Flow
+<div class="flex justify-center">
+  <img src="/images/immutabledb/temporal-tables-flow.svg" alt="Temporal Tables Flow" class="w-1/2">
+</div>
+---
+
+# Temporal Tables: Structure
 
 ```sql
--- Temporal User table
-CREATE TABLE users_temporal (
-  id UUID NOT NULL,
-  email VARCHAR(255) NOT NULL,
-  name VARCHAR(100) NOT NULL,
-  status VARCHAR(20) NOT NULL,
-  valid_from TIMESTAMP NOT NULL,
-  valid_to TIMESTAMP NOT NULL DEFAULT 'infinity'::TIMESTAMP,
-  created_by VARCHAR(100) NOT NULL,
-  PRIMARY KEY (id, valid_from)
+CREATE TABLE customers_temporal (
+    customer_id INTEGER NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    status VARCHAR(20) NOT NULL,
+    valid_from TIMESTAMP NOT NULL,
+    valid_to TIMESTAMP NOT NULL DEFAULT 'infinity',
+    modified_by VARCHAR(50) NOT NULL,
+    PRIMARY KEY (customer_id, valid_from)
 );
 
--- Enforce non-overlapping periods
-CREATE UNIQUE INDEX users_temporal_no_overlap
-ON users_temporal (id, valid_from, valid_to)
-WHERE valid_to != 'infinity'::TIMESTAMP;
+-- Indexes for efficient querying
+CREATE INDEX idx_customers_current 
+ON customers_temporal (customer_id) 
+WHERE valid_to = 'infinity';
 
--- Index for period queries
-CREATE INDEX users_temporal_valid_period
-ON users_temporal (id, valid_from, valid_to);
+CREATE INDEX idx_customers_history 
+ON customers_temporal (customer_id, valid_from, valid_to);
 ```
-</div>
+
+---
+
+# Temporal Tables: Insert Function
+
+```sql
+CREATE OR REPLACE FUNCTION insert_customer(
+    p_customer_id INTEGER,
+    p_name VARCHAR,
+    p_email VARCHAR,
+    p_status VARCHAR,
+    p_modified_by VARCHAR
+) RETURNS VOID AS $$
+BEGIN
+    INSERT INTO customers_temporal (
+        customer_id,
+        name,
+        email,
+        status,
+        valid_from,
+        modified_by
+    )
+    VALUES (
+        p_customer_id,
+        p_name,
+        p_email,
+        p_status,
+        CURRENT_TIMESTAMP,
+        p_modified_by
+    );
+END;
+$$ LANGUAGE plpgsql;
+```
+
 ---
 
 # Temporal Tables: Update Function
@@ -388,336 +455,453 @@ ON users_temporal (id, valid_from, valid_to);
 <div style="overflow-y: auto; height: 450px;">
 
 ```sql
-CREATE OR REPLACE FUNCTION update_user_temporal(
-  p_id UUID,
-  p_email VARCHAR,
-  p_name VARCHAR,
-  p_status VARCHAR,
-  p_modified_by VARCHAR
+CREATE OR REPLACE FUNCTION update_customer(
+    p_customer_id INTEGER,
+    p_name VARCHAR DEFAULT NULL,
+    p_email VARCHAR DEFAULT NULL,
+    p_status VARCHAR DEFAULT NULL,
+    p_modified_by VARCHAR DEFAULT NULL
 ) RETURNS VOID AS $$
-DECLARE
-  current_time TIMESTAMP := CURRENT_TIMESTAMP;
+DECLARE 
+    v_current_record customers_temporal%ROWTYPE;
 BEGIN
-  -- End validity of the current record
-  UPDATE users_temporal
-  SET valid_to = current_time
-  WHERE id = p_id AND valid_to = 'infinity'::TIMESTAMP;
-  
-  -- Insert new version
-  INSERT INTO users_temporal (
-    id, email, name, status, valid_from, created_by
-  ) VALUES (
-    p_id,
-    COALESCE(p_email, (SELECT email FROM users_temporal 
-                      WHERE id = p_id 
-                      ORDER BY valid_to DESC 
-                      LIMIT 1)),
-    COALESCE(p_name, (SELECT name FROM users_temporal 
-                      WHERE id = p_id 
-                      ORDER BY valid_to DESC 
-                      LIMIT 1)),
-    COALESCE(p_status, (SELECT status FROM users_temporal 
-                      WHERE id = p_id 
-                      ORDER BY valid_to DESC 
-                      LIMIT 1)),
-    current_time,
-    p_modified_by
-  );
+    -- Get current record
+    SELECT * INTO v_current_record
+    FROM customers_temporal
+    WHERE customer_id = p_customer_id
+    AND valid_to = 'infinity';
+
+    -- Close current period
+    UPDATE customers_temporal
+    SET valid_to = CURRENT_TIMESTAMP
+    WHERE customer_id = p_customer_id
+    AND valid_to = 'infinity';
+
+    -- Insert new version
+    INSERT INTO customers_temporal (
+        customer_id, name, email, status,
+        valid_from, modified_by
+    )
+    VALUES (
+        p_customer_id,
+        COALESCE(p_name, v_current_record.name),
+        COALESCE(p_email, v_current_record.email),
+        COALESCE(p_status, v_current_record.status),
+        CURRENT_TIMESTAMP,
+        p_modified_by
+    );
 END;
 $$ LANGUAGE plpgsql;
 ```
 </div>
 ---
 
-# Temporal Tables: Example Queries
+# Temporal Tables: Querying
 
 <div style="overflow-y: auto; height: 450px;">
 
 ```sql
--- Insert initial user
-INSERT INTO users_temporal (id, email, name, status, valid_from, created_by)
-VALUES (
-  'b47ac10b-58cc-4372-a567-0e02b2c3d789',
-  'jane@example.com',
-  'Jane Doe',
-  'active',
-  '2023-01-01 00:00:00',
-  'system'
-);
+-- Get current state
+SELECT * FROM customers_temporal
+WHERE customer_id = 101
+AND valid_to = 'infinity';
 
--- Update user using function
-SELECT update_user_temporal(
-  'b47ac10b-58cc-4372-a567-0e02b2c3d789',
-  'jane.doe@example.com',
-  'Jane Smith',
-  NULL,
-  'admin'
-);
-
--- Query user at a point in time
-SELECT * FROM users_temporal
-WHERE id = 'b47ac10b-58cc-4372-a567-0e02b2c3d789'
-AND valid_from <= '2023-06-15'::TIMESTAMP
-AND valid_to > '2023-06-15'::TIMESTAMP;
-
--- Query all historical versions
-SELECT * FROM users_temporal
-WHERE id = 'b47ac10b-58cc-4372-a567-0e02b2c3d789'
+-- Get complete history
+SELECT * FROM customers_temporal
+WHERE customer_id = 101
 ORDER BY valid_from;
+
+-- Get state at specific time
+SELECT * FROM customers_temporal
+WHERE customer_id = 101
+AND valid_from <= '2023-01-01'::timestamp
+AND valid_to > '2023-01-01'::timestamp;
+
+-- Current customers view
+CREATE VIEW current_customers AS
+SELECT 
+    customer_id,
+    name,
+    email,
+    status,
+    valid_from AS last_updated,
+    modified_by AS last_modified_by
+FROM customers_temporal
+WHERE valid_to = 'infinity';
 ```
 </div>
 ---
 
 # Pattern 5: Snapshot Pattern
 
+<div class="grid grid-cols-2 gap-4">
+<div>
+
+**Key Components:**
+- Events table (source of truth)
+- Snapshots table (performance optimization)
+- Automatic snapshot creation
+- Balance calculation with snapshots
+
+</div>
+<div>
+
+**Benefits:**
+- Improved query performance
+- Reduced event replay time
+- Memory efficiency
+- Scalable event sourcing
+
+</div>
+</div>
+
+---
+
+# Snapshot Pattern: Flow
+<div class="flex justify-center">
+  <img src="/images/immutabledb/snapshot-pattern-flow.svg" alt="Snapshot Pattern Flow" class="w-1/2">
+</div>
+---
+
+# Snapshot Pattern: Structure
+
 <div style="overflow-y: auto; height: 450px;">
-
 ```sql
--- Events table (from previous examples)
-
--- Snapshots table
-CREATE TABLE snapshots (    
-  id SERIAL PRIMARY KEY,
-  aggregate_id UUID NOT NULL,
-  aggregate_type VARCHAR(100) NOT NULL,
-  version INTEGER NOT NULL,
-  state JSONB NOT NULL,
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+-- Events table (source of truth)
+CREATE TABLE account_events (
+    id SERIAL PRIMARY KEY,
+    account_id INTEGER NOT NULL,
+    event_type VARCHAR(50) NOT NULL,
+    amount NUMERIC(12, 2),
+    reference VARCHAR(100),
+    occurred_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    metadata JSONB
 );
 
--- Index for efficient lookups
-CREATE UNIQUE INDEX idx_snapshots_latest 
-ON snapshots(aggregate_id, aggregate_type, version);
+-- Snapshots table
+CREATE TABLE account_snapshots (
+    id SERIAL PRIMARY KEY,
+    account_id INTEGER NOT NULL,
+    balance NUMERIC(12, 2) NOT NULL,
+    snapshot_up_to_event_id INTEGER NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Indexes for performance
+CREATE INDEX idx_account_events ON account_events(account_id, occurred_at);
+CREATE UNIQUE INDEX idx_latest_snapshot 
+ON account_snapshots(account_id, snapshot_up_to_event_id);
 ```
 </div>
 ---
 
-# Snapshot Pattern: Creation Function
+# Snapshot Pattern: Event Recording
 
 <div style="overflow-y: auto; height: 450px;">
 
 ```sql
-CREATE OR REPLACE FUNCTION create_user_snapshot(user_id UUID)
-RETURNS VOID AS $$
-DECLARE
-  current_state JSONB;
-  current_version INTEGER;
+CREATE OR REPLACE FUNCTION record_account_event(
+    p_account_id INTEGER,
+    p_event_type VARCHAR,
+    p_amount NUMERIC DEFAULT NULL,
+    p_reference VARCHAR DEFAULT NULL,
+    p_metadata JSONB DEFAULT NULL
+) RETURNS INTEGER AS $$
+DECLARE 
+    new_event_id INTEGER;
 BEGIN
-  -- Get the current state
-  current_state := get_current_user_state(user_id);
-  
-  -- Calculate the current version
-  SELECT COUNT(*) INTO current_version
-  FROM events
-  WHERE aggregate_id = user_id AND aggregate_type = 'user';
-  
-  -- Create a new snapshot
-  INSERT INTO snapshots (
-    aggregate_id, 
-    aggregate_type, 
-    version, 
-    state
-  ) VALUES (
-    user_id,
-    'user',
-    current_version,
-    current_state
-  )
-  ON CONFLICT (aggregate_id, aggregate_type, version) 
-  DO NOTHING;
+    INSERT INTO account_events (
+        account_id,
+        event_type,
+        amount,
+        reference,
+        metadata
+    )
+    VALUES (
+        p_account_id,
+        p_event_type,
+        p_amount,
+        p_reference,
+        p_metadata
+    )
+    RETURNING id INTO new_event_id;
+    
+    RETURN new_event_id;
 END;
 $$ LANGUAGE plpgsql;
 ```
 </div>
 ---
 
-# Snapshot Pattern: Optimized State Function
+# Snapshot Pattern: Balance Calculation
 
 <div style="overflow-y: auto; height: 450px;">
 
 ```sql
-CREATE OR REPLACE FUNCTION get_user_state_with_snapshot(user_id UUID)
-RETURNS JSONB AS $$
-DECLARE
-  result JSONB := '{}'::JSONB;
-  snapshot_record RECORD;
-  event_record RECORD;
-  snapshot_version INTEGER := 0;
+CREATE OR REPLACE FUNCTION get_account_balance(p_account_id INTEGER) 
+RETURNS NUMERIC AS $$
+DECLARE 
+    latest_snapshot RECORD;
+    current_balance NUMERIC;
 BEGIN
-  -- Find the latest snapshot
-  SELECT state, version INTO snapshot_record
-  FROM snapshots
-  WHERE aggregate_id = user_id AND aggregate_type = 'user'
-  ORDER BY version DESC
-  LIMIT 1;
-  
-  -- If a snapshot exists, use it as the starting point
-  IF FOUND THEN
-    result := snapshot_record.state;
-    snapshot_version := snapshot_record.version;
-  END IF;
-  
-  -- Apply any events that occurred after the snapshot
-  FOR event_record IN 
-    SELECT event_type, event_data 
-    FROM events 
-    WHERE aggregate_id = user_id 
-      AND aggregate_type = 'user'
-      AND id > (
-        SELECT MAX(id) FROM events 
-        WHERE aggregate_id = user_id 
-          AND aggregate_type = 'user'
-        LIMIT snapshot_version
-      )
-    ORDER BY created_at ASC
-  LOOP
-    -- Apply events (same logic as before)
-    CASE event_record.event_type
-      WHEN 'UserCreated' THEN
-        result := result || event_record.event_data;
-      WHEN 'EmailChanged' THEN
-        result := jsonb_set(result, '{email}', event_record.event_data->>'email');
-      WHEN 'ProfileUpdated' THEN
-        result := result || event_record.event_data;
-      ELSE
-        -- Handle other event types
-    END CASE;
-  END LOOP;
-  
-  RETURN result;
+    -- Find the latest snapshot
+    SELECT * INTO latest_snapshot
+    FROM account_snapshots
+    WHERE account_id = p_account_id
+    ORDER BY snapshot_up_to_event_id DESC
+    LIMIT 1;
+
+    -- If no snapshot exists, calculate from all events
+    IF NOT FOUND THEN 
+        RETURN calculate_balance_from_events(p_account_id);
+    END IF;
+
+    -- Calculate incremental balance from events after the snapshot
+    current_balance := latest_snapshot.balance + 
+        calculate_balance_from_events(
+            p_account_id,
+            latest_snapshot.snapshot_up_to_event_id + 1
+        );
+
+    RETURN current_balance;
 END;
 $$ LANGUAGE plpgsql;
+```
+</div>
+---
+
+# Snapshot Pattern: Automatic Creation
+
+<div style="overflow-y: auto; height: 450px;">
+
+```sql
+CREATE OR REPLACE FUNCTION check_snapshot_needed(
+    p_account_id INTEGER,
+    p_event_threshold INTEGER DEFAULT 50
+) RETURNS BOOLEAN AS $$
+DECLARE
+    latest_snapshot RECORD;
+    latest_event_id INTEGER;
+    events_since_snapshot INTEGER;
+BEGIN
+    -- Find the latest snapshot
+    SELECT * INTO latest_snapshot
+    FROM account_snapshots
+    WHERE account_id = p_account_id
+    ORDER BY snapshot_up_to_event_id DESC
+    LIMIT 1;
+
+    -- Get the latest event ID
+    SELECT MAX(id) INTO latest_event_id
+    FROM account_events
+    WHERE account_id = p_account_id;
+
+    -- Create first snapshot if none exists
+    IF NOT FOUND AND latest_event_id IS NOT NULL THEN
+        PERFORM create_account_snapshot(p_account_id);
+        RETURN TRUE;
+    END IF;
+
+    -- Calculate events since last snapshot
+    events_since_snapshot := latest_event_id - latest_snapshot.snapshot_up_to_event_id;
+
+    -- Create new snapshot if passed threshold
+    IF events_since_snapshot >= p_event_threshold THEN
+        PERFORM create_account_snapshot(p_account_id);
+        RETURN TRUE;
+    END IF;
+
+    RETURN FALSE;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Trigger for automatic snapshot creation
+CREATE TRIGGER account_event_after_insert
+    AFTER INSERT ON account_events 
+    FOR EACH ROW 
+    EXECUTE FUNCTION after_event_insert_trigger();
 ```
 </div>
 ---
 
 # Pattern 6: Materialized Views
 
-<div style="overflow-y: auto; height: 450px;">
+<div class="grid grid-cols-2 gap-4">
+<div>
+
+**Key Components:**
+- Base tables with events
+- Materialized view definition
+- Refresh strategy
+- Automatic refresh triggers
+
+</div>
+<div>
+
+**Benefits:**
+- Improved query performance
+- Complex data aggregation
+- Real-time analytics
+- Reduced database load
+
+</div>
+</div>
+
+---
+
+# Materialized Views: Flow
+
+<div class="flex justify-center">
+  <img src="/images/immutabledb/materialized-view-flow.svg" alt="Materialized View Flow" class="w-1/2">
+</div>
+
+--- 
+
+# Materialized Views: Table Structure
 
 ```sql
--- Create a regular materialized view for product catalog
-CREATE MATERIALIZED VIEW product_catalog AS
+CREATE TABLE products (
+    product_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    base_price NUMERIC(10, 2) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE product_events (
+    id SERIAL PRIMARY KEY,
+    product_id INTEGER NOT NULL REFERENCES products(product_id),
+    event_type VARCHAR(50) NOT NULL,
+    event_data JSONB NOT NULL,
+    occurred_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE inventory_events (
+    id SERIAL PRIMARY KEY,
+    product_id INTEGER NOT NULL REFERENCES products(product_id),
+    event_type VARCHAR(50) NOT NULL,
+    quantity INTEGER NOT NULL,
+    warehouse_id INTEGER NOT NULL,
+    occurred_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+---
+
+# Materialized Views: Analytics View
+
+<div style="overflow-y: auto; height: 450px;">
+```sql
+CREATE MATERIALIZED VIEW product_analytics AS
+WITH price_data AS (
+    SELECT 
+        p.product_id,
+        p.name,
+        p.base_price,
+        COALESCE(
+            (SELECT (pe.event_data->>'new_price')::NUMERIC
+             FROM product_events pe
+             WHERE pe.product_id = p.product_id
+             AND pe.event_type = 'price_changed'
+             ORDER BY pe.occurred_at DESC
+             LIMIT 1
+            ), p.base_price
+        ) AS current_price
+    FROM products p
+),
+inventory_data AS (
+    SELECT 
+        product_id,
+        SUM(CASE
+            WHEN event_type = 'stock_added' THEN quantity
+            WHEN event_type = 'stock_removed' THEN -quantity
+            ELSE 0
+        END) AS current_stock
+    FROM inventory_events
+    GROUP BY product_id
+)
 SELECT 
-  p.id,
-  p.name,
-  p.description,
-  c.name AS category,
-  p.price,
-  i.quantity_available,
-  COALESCE(r.average_rating, 0) AS average_rating
-FROM 
-  products p
-JOIN 
-  categories c ON p.category_id = c.id
-JOIN 
-  inventory i ON p.id = i.product_id
-LEFT JOIN (
-  SELECT 
-    product_id, 
-    AVG(rating) AS average_rating
-  FROM 
-    product_reviews
-  GROUP BY 
-    product_id
-) r ON p.id = r.product_id;
-
--- Create index for efficient querying
-CREATE INDEX idx_product_catalog_id ON product_catalog(id);
-CREATE INDEX idx_product_catalog_category ON product_catalog(category);
-CREATE INDEX idx_product_catalog_price ON product_catalog(price);
+    pd.product_id,
+    pd.name,
+    pd.base_price,
+    pd.current_price,
+    COALESCE(id.current_stock, 0) AS current_inventory,
+    CURRENT_TIMESTAMP AS last_updated
+FROM price_data pd
+LEFT JOIN inventory_data id ON pd.product_id = id.product_id;
 ```
 </div>
 ---
 
-# Materialized Views: Refresh Function
+# Materialized Views: Refresh Strategy
 
 <div style="overflow-y: auto; height: 450px;">
 
 ```sql
--- Create a function to refresh materialized views
-CREATE OR REPLACE FUNCTION refresh_materialized_views()
+-- Function to refresh the materialized view
+CREATE OR REPLACE FUNCTION refresh_product_analytics() 
 RETURNS VOID AS $$
 BEGIN
-  REFRESH MATERIALIZED VIEW CONCURRENTLY product_catalog;
-  -- Add more materialized views as needed
+    REFRESH MATERIALIZED VIEW CONCURRENTLY product_analytics;
 END;
 $$ LANGUAGE plpgsql;
 
--- Create a schedule to refresh the views
-CREATE EXTENSION IF NOT EXISTS pg_cron;
+-- Trigger function for automatic refresh
+CREATE OR REPLACE FUNCTION refresh_analytics_trigger() 
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Could implement more sophisticated logic here
+    -- For example, using pg_advisory_lock to prevent concurrent refreshes
+    PERFORM refresh_product_analytics();
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
 
-SELECT cron.schedule('*/15 * * * *', 'SELECT refresh_materialized_views()');
+-- Create triggers on source tables
+CREATE TRIGGER refresh_on_product_change
+    AFTER INSERT OR UPDATE ON products 
+    FOR EACH STATEMENT 
+    EXECUTE FUNCTION refresh_analytics_trigger();
+
+CREATE TRIGGER refresh_on_product_event
+    AFTER INSERT ON product_events 
+    FOR EACH STATEMENT 
+    EXECUTE FUNCTION refresh_analytics_trigger();
 ```
 </div>
 ---
 
-# Materialized Views: With Events
+# Materialized Views: Usage Examples
 
 <div style="overflow-y: auto; height: 450px;">
 
 ```sql
--- Create a function to build a materialized view from events
-CREATE OR REPLACE FUNCTION rebuild_product_inventory_view()
-RETURNS VOID AS $$
-BEGIN
-  -- Drop and recreate the materialized view
-  DROP MATERIALIZED VIEW IF EXISTS product_inventory;
-  
-  CREATE MATERIALIZED VIEW product_inventory AS
-  WITH inventory_events AS (
-    SELECT 
-      e.aggregate_id AS product_id,
-      e.event_type,
-      e.event_data,
-      e.created_at
-    FROM 
-      events e
-    WHERE 
-      e.aggregate_type = 'product' AND
-      (e.event_type = 'ProductCreated' OR
-       e.event_type = 'InventoryChanged' OR
-       e.event_type = 'PriceChanged')
-  ),
-  inventory_state AS (
-    SELECT 
-      product_id,
-      SUM(CASE 
-        WHEN event_type = 'InventoryChanged' THEN (event_data->>'quantity_change')::INTEGER
-        ELSE 0
-      END) AS quantity_available,
-      MAX(CASE 
-        WHEN event_type = 'PriceChanged' THEN (event_data->>'new_price')::NUMERIC
-        WHEN event_type = 'ProductCreated' THEN (event_data->>'price')::NUMERIC
-        ELSE NULL
-      END) OVER (PARTITION BY product_id ORDER BY created_at) AS current_price,
-      MAX(created_at) AS last_updated
-    FROM 
-      inventory_events
-    GROUP BY 
-      product_id
-  )
-  SELECT 
-    p.id AS product_id,
-    p.event_data->>'name' AS product_name,
-    i.quantity_available,
-    i.current_price,
-    i.last_updated
-  FROM 
-    (SELECT DISTINCT ON (aggregate_id) 
-      aggregate_id AS id, 
-      event_data
-     FROM events 
-     WHERE aggregate_type = 'product' AND event_type = 'ProductCreated'
-     ORDER BY aggregate_id, created_at) p
-  JOIN 
-    inventory_state i ON p.id = i.product_id;
-  
-  -- Create indexes
-  CREATE INDEX idx_product_inventory_id ON product_inventory(product_id);
-  CREATE INDEX idx_product_inventory_name ON product_inventory(product_name);
-END;
-$$ LANGUAGE plpgsql;
+-- View current analytics
+SELECT * FROM product_analytics;
+
+-- Compare performance
+EXPLAIN ANALYZE SELECT * FROM product_analytics;
+
+-- vs calculating directly (slower)
+EXPLAIN ANALYZE 
+WITH price_data AS (
+    SELECT p.product_id, p.name, p.base_price,
+           -- Complex price calculation
+           COALESCE((
+               SELECT (pe.event_data->>'new_price')::NUMERIC
+               FROM product_events pe
+               WHERE pe.product_id = p.product_id
+               AND pe.event_type = 'price_changed'
+               ORDER BY pe.occurred_at DESC
+               LIMIT 1
+           ), p.base_price) AS current_price
+    FROM products p
+)
+-- ... rest of complex calculation ...
+SELECT * FROM price_data;
+
+-- Manual refresh when needed
+SELECT refresh_product_analytics();
 ```
 </div>
 ---

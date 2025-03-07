@@ -1,0 +1,134 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 650">
+  <!-- Background -->
+  <rect width="900" height="650" fill="#f8f9fa" rx="10" ry="10" stroke="#dee2e6" stroke-width="2"/>
+  
+  <!-- Title -->
+  <text x="450" y="40" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#212529">Snapshot Pattern Flow</text>
+  
+  <!-- Events Table -->
+  <rect x="50" y="70" width="350" height="130" rx="5" ry="5" fill="#e9ecef" stroke="#adb5bd" stroke-width="2"/>
+  <text x="225" y="95" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#212529">account_events Table</text>
+  <text x="225" y="115" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#495057">(Source of Truth)</text>
+  
+  <rect x="70" y="130" width="310" height="55" rx="3" ry="3" fill="white" stroke="#adb5bd" stroke-width="1"/>
+  <text x="80" y="150" font-family="monospace" font-size="11" fill="#495057">id | account_id | event_type | amount | occurred_at</text>
+  <text x="80" y="170" font-family="monospace" font-size="11" fill="#495057">1  | 1001 | deposit | 1000.00 | 2023-01-01 12:00</text>
+  
+  <!-- Snapshots Table -->
+  <rect x="500" y="70" width="350" height="130" rx="5" ry="5" fill="#e9ecef" stroke="#adb5bd" stroke-width="2"/>
+  <text x="675" y="95" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#212529">account_snapshots Table</text>
+  <text x="675" y="115" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#495057">(Performance Optimization)</text>
+  
+  <rect x="520" y="130" width="310" height="55" rx="3" ry="3" fill="white" stroke="#adb5bd" stroke-width="1"/>
+  <text x="530" y="150" font-family="monospace" font-size="11" fill="#495057">id | account_id | balance | snapshot_up_to_event_id</text>
+  <text x="530" y="170" font-family="monospace" font-size="11" fill="#495057">1  | 1001 | 750.00 | 50 | 2023-01-05 15:30</text>
+  
+  <!-- Event Stream Visualization -->
+  <rect x="50" y="230" width="800" height="140" rx="5" ry="5" fill="white" stroke="#adb5bd" stroke-width="2"/>
+  <text x="450" y="255" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#212529">Event Stream (Account ID: 1001)</text>
+  
+  <!-- Timeline -->
+  <line x1="100" y1="300" x2="750" y2="300" stroke="#adb5bd" stroke-width="2"/>
+  <polygon points="750,300 740,295 740,305" fill="#adb5bd"/>
+  
+  <!-- Event Markers -->
+  <circle cx="150" cy="300" r="8" fill="#3b5bdb"/>
+  <text x="150" y="320" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#495057">Event 1</text>
+  
+  <circle cx="190" cy="300" r="8" fill="#3b5bdb"/>
+  <text x="190" y="320" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#495057">Event 2</text>
+  
+  <circle cx="230" cy="300" r="8" fill="#3b5bdb"/>
+  <text x="230" y="320" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#495057">Event 3</text>
+  
+  <!-- More Events -->
+  <circle cx="270" cy="300" r="5" fill="#3b5bdb" opacity="0.7"/>
+  <circle cx="300" cy="300" r="5" fill="#3b5bdb" opacity="0.7"/>
+  <circle cx="330" cy="300" r="5" fill="#3b5bdb" opacity="0.7"/>
+  
+  <!-- Snapshot Marker -->
+  <rect x="350" y="280" width="5" height="40" fill="#fa5252" stroke="none"/>
+  <text x="350" y="340" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#fa5252">Snapshot 1</text>
+  <text x="350" y="352" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#fa5252">(After Event 50)</text>
+  
+  <!-- More Events -->
+  <circle cx="390" cy="300" r="5" fill="#3b5bdb" opacity="0.7"/>
+  <circle cx="420" cy="300" r="5" fill="#3b5bdb" opacity="0.7"/>
+  <circle cx="450" cy="300" r="5" fill="#3b5bdb" opacity="0.7"/>
+  <circle cx="480" cy="300" r="5" fill="#3b5bdb" opacity="0.7"/>
+  <circle cx="510" cy="300" r="5" fill="#3b5bdb" opacity="0.7"/>
+  <circle cx="540" cy="300" r="5" fill="#3b5bdb" opacity="0.7"/>
+  
+  <!-- Second Snapshot -->
+  <rect x="570" y="280" width="5" height="40" fill="#fa5252" stroke="none"/>
+  <text x="570" y="340" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#fa5252">Snapshot 2</text>
+  <text x="570" y="352" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#fa5252">(After Event 100)</text>
+  
+  <!-- More Events -->
+  <circle cx="610" cy="300" r="5" fill="#3b5bdb" opacity="0.7"/>
+  <circle cx="640" cy="300" r="5" fill="#3b5bdb" opacity="0.7"/>
+  <circle cx="670" cy="300" r="5" fill="#3b5bdb" opacity="0.7"/>
+  <circle cx="700" cy="300" r="5" fill="#3b5bdb" opacity="0.7"/>
+  
+  <!-- Balance Calculation Diagram -->
+  <rect x="50" y="400" width="800" height="150" rx="5" ry="5" fill="#fff9db" stroke="#f08c00" stroke-width="2"/>
+  <text x="450" y="425" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#212529">Balance Calculation Strategies</text>
+  
+  <!-- Without Snapshot -->
+  <rect x="80" y="445" width="340" height="85" rx="5" ry="5" fill="white" stroke="#495057" stroke-width="1"/>
+  <text x="250" y="465" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#e03131">Without Snapshot</text>
+  
+  <line x1="100" y1="485" x2="320" y2="485" stroke="#495057" stroke-width="1.5"/>
+  <circle cx="120" cy="485" r="5" fill="#3b5bdb"/>
+  <circle cx="140" cy="485" r="5" fill="#3b5bdb"/>
+  <circle cx="160" cy="485" r="5" fill="#3b5bdb"/>
+  <circle cx="180" cy="485" r="5" fill="#3b5bdb"/>
+  <circle cx="200" cy="485" r="5" fill="#3b5bdb"/>
+  <circle cx="220" cy="485" r="5" fill="#3b5bdb"/>
+  <circle cx="240" cy="485" r="5" fill="#3b5bdb"/>
+  <circle cx="260" cy="485" r="5" fill="#3b5bdb"/>
+  <circle cx="280" cy="485" r="5" fill="#3b5bdb"/>
+  <circle cx="300" cy="485" r="5" fill="#3b5bdb"/>
+  
+  <text x="200" y="510" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#495057">calculate_balance_from_events()</text>
+  <text x="200" y="525" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#495057">Process ALL events from the beginning</text>
+  
+  <!-- With Snapshot -->
+  <rect x="480" y="445" width="340" height="85" rx="5" ry="5" fill="white" stroke="#495057" stroke-width="1"/>
+  <text x="650" y="465" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#2b8a3e">With Snapshot</text>
+  
+  <rect x="500" y="480" width="90" height="30" rx="3" ry="3" fill="#2b8a3e" opacity="0.2"/>
+  <text x="545" y="500" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#2b8a3e">Snapshot</text>
+  <text x="545" y="515" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#2b8a3e">Balance: $750</text>
+  
+  <line x1="590" y1="485" x2="700" y2="485" stroke="#495057" stroke-width="1.5"/>
+  <circle cx="610" cy="485" r="5" fill="#3b5bdb"/>
+  <circle cx="630" cy="485" r="5" fill="#3b5bdb"/>
+  <circle cx="650" cy="485" r="5" fill="#3b5bdb"/>
+  <circle cx="670" cy="485" r="5" fill="#3b5bdb"/>
+  <circle cx="690" cy="485" r="5" fill="#3b5bdb"/>
+  
+  <text x="645" y="510" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#495057">get_account_balance()</text>
+  <text x="645" y="525" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#495057">Process only NEW events since snapshot</text>
+  
+  <!-- Automatic Snapshot Creation -->
+  <rect x="50" y="570" width="800" height="60" rx="5" ry="5" fill="#d3f9d8" stroke="#2b8a3e" stroke-width="2"/>
+  <text x="450" y="595" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#212529">Automatic Snapshot Creation</text>
+  <text x="450" y="615" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#343a40">Trigger after_event_insert_trigger creates new snapshots every 50 events</text>
+  
+  <!-- Connecting Arrows -->
+  <line x1="225" y1="200" x2="225" y2="230" stroke="#212529" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+  <line x1="675" y1="200" x2="675" y2="230" stroke="#212529" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+  
+  <line x1="350" y1="370" x2="350" y2="400" stroke="#fa5252" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+  <line x1="570" y1="370" x2="570" y2="400" stroke="#fa5252" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+  
+  <line x1="450" y1="530" x2="450" y2="570" stroke="#212529" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+  
+  <!-- Defs for markers -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#212529" />
+    </marker>
+  </defs>
+</svg>

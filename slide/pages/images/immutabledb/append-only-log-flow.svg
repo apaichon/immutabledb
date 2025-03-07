@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620">
+  <!-- Background -->
+  <rect width="900" height="620" fill="#f8f9fa" rx="10" ry="10" stroke="#dee2e6" stroke-width="2"/>
+  
+  <!-- Title -->
+  <text x="450" y="40" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#212529">Append-Only Log Pattern</text>
+  
+  <!-- Transaction Log Table Box -->
+  <rect x="50" y="70" width="800" height="140" rx="5" ry="5" fill="#e9ecef" stroke="#adb5bd" stroke-width="2"/>
+  <text x="450" y="95" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#212529">Transaction Log Table (Immutable)</text>
+  
+  <!-- Table Structure -->
+  <rect x="70" y="110" width="760" height="80" rx="3" ry="3" fill="white" stroke="#adb5bd" stroke-width="1"/>
+  <text x="80" y="130" font-family="monospace" font-size="12" fill="#495057">id | transaction_type | entity_id | entity_type | data | metadata | created_at</text>
+  <text x="80" y="150" font-family="monospace" font-size="12" fill="#495057">1  | deposit | a47fc10b | account | {"amount": 100.00, "currency": "USD"} | {"channel": "web"...} | 2023-01-01</text>
+  <text x="80" y="170" font-family="monospace" font-size="12" fill="#495057">2  | withdrawal | a47fc10b | account | {"amount": 50.00, "currency": "USD"} | {"channel": "atm"...} | 2023-01-02</text>
+  
+  <!-- Protection Mechanism -->
+  <rect x="100" y="220" width="700" height="80" rx="5" ry="5" fill="#ffe3e3" stroke="#fa5252" stroke-width="2"/>
+  <text x="450" y="245" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#e03131">Immutability Protection</text>
+  <text x="450" y="270" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#495057">Triggers prevent_transaction_log_update and prevent_transaction_log_delete</text>
+  <text x="450" y="290" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#495057">Raise exception if anyone attempts to modify or delete existing records</text>
+  
+  <!-- Transaction Flow -->
+  <rect x="150" y="320" width="600" height="200" rx="5" ry="5" fill="white" stroke="#adb5bd" stroke-width="2"/>
+  
+  <!-- Transaction 1: Deposit -->
+  <rect x="180" y="350" width="160" height="60" rx="5" ry="5" fill="#4dabf7" opacity="0.7" stroke="#339af0" stroke-width="2"/>
+  <text x="260" y="375" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="white">Deposit</text>
+  <text x="260" y="395" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="white">$100.00</text>
+  
+  <!-- Transaction 2: Withdrawal -->
+  <rect x="380" y="350" width="160" height="60" rx="5" ry="5" fill="#4dabf7" opacity="0.7" stroke="#339af0" stroke-width="2"/>
+  <text x="460" y="375" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="white">Withdrawal</text>
+  <text x="460" y="395" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="white">$50.00</text>
+  
+  <!-- Future Transactions -->
+  <rect x="580" y="350" width="160" height="60" rx="5" ry="5" fill="#4dabf7" opacity="0.3" stroke="#339af0" stroke-width="2" stroke-dasharray="5,5"/>
+  <text x="660" y="375" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#339af0">Future Transactions</text>
+  <text x="660" y="395" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#339af0">fee, interest, etc.</text>
+  
+  <!-- Timeline -->
+  <line x1="180" y1="430" x2="740" y2="430" stroke="#adb5bd" stroke-width="2"/>
+  <polygon points="740,430 730,425 730,435" fill="#adb5bd"/>
+  
+  <line x1="260" y1="410" x2="260" y2="430" stroke="#adb5bd" stroke-width="1"/>
+  <text x="260" y="445" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#495057">2023-01-01</text>
+  
+  <line x1="460" y1="410" x2="460" y2="430" stroke="#adb5bd" stroke-width="1"/>
+  <text x="460" y="445" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#495057">2023-01-02</text>
+  
+  <line x1="660" y1="410" x2="660" y2="430" stroke="#adb5bd" stroke-width="1" stroke-dasharray="3,3"/>
+  <text x="660" y="445" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#495057">Future</text>
+  
+  <!-- Flow Arrows -->
+  <line x1="340" y1="380" x2="380" y2="380" stroke="#212529" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="540" y1="380" x2="580" y2="380" stroke="#212529" stroke-width="2" stroke-dasharray="5,5" marker-end="url(#arrowhead)"/>
+  
+  <!-- Balance Calculation -->
+  <rect x="250" y="480" width="400" height="110" rx="5" ry="5" fill="#d3f9d8" stroke="#40c057" stroke-width="2"/>
+  <text x="450" y="505" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#212529">Balance Calculation</text>
+  <text x="450" y="530" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#212529">get_account_balance() function</text>
+  <rect x="290" y="540" width="320" height="40" rx="3" ry="3" fill="white" stroke="#40c057" stroke-width="1"/>
+  <text x="450" y="565" font-family="monospace" font-size="16" font-weight="bold" text-anchor="middle" fill="#212529">$100.00 - $50.00 = $50.00</text>
+  
+  <!-- Calculation Arrows -->
+  <line x1="260" y1="410" x2="380" y2="480" stroke="#212529" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#arrowhead)"/>
+  <line x1="460" y1="410" x2="450" y2="480" stroke="#212529" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#arrowhead)"/>
+  <line x1="660" y1="410" x2="520" y2="480" stroke="#212529" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#arrowhead)"/>
+  
+  <!-- Defs for markers -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#212529" />
+    </marker>
+  </defs>
+</svg>

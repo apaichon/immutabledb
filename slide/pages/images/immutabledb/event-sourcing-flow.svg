@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600">
+  <!-- Background -->
+  <rect width="900" height="600" fill="#f8f9fa" rx="10" ry="10" stroke="#dee2e6" stroke-width="2"/>
+  
+  <!-- Title -->
+  <text x="450" y="40" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#212529">Event Sourcing Flow</text>
+  
+  <!-- Events Table Box -->
+  <rect x="50" y="80" width="800" height="120" rx="5" ry="5" fill="#e9ecef" stroke="#adb5bd" stroke-width="2"/>
+  <text x="450" y="105" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#212529">Events Table</text>
+  
+  <!-- Events Table Structure -->
+  <rect x="70" y="120" width="760" height="60" rx="3" ry="3" fill="white" stroke="#adb5bd" stroke-width="1"/>
+  <text x="80" y="140" font-family="monospace" font-size="12" fill="#495057">id | aggregate_id | aggregate_type | event_type | event_data | created_at | created_by</text>
+  <text x="80" y="160" font-family="monospace" font-size="12" fill="#495057">1  | f47ac10b    | user           | UserCreated | {"email":"john@example.com","name":"John Doe"} | 2023-01-01 | system</text>
+  <text x="80" y="175" font-family="monospace" font-size="12" fill="#495057">2  | f47ac10b    | user           | ProfileUpdated | {"name":"John Smith"} | 2023-01-02 | f47ac10b</text>
+  
+  <!-- Event Flow Diagram -->
+  <rect x="100" y="240" width="700" height="300" rx="5" ry="5" fill="white" stroke="#adb5bd" stroke-width="2"/>
+  
+  <!-- Event 1: UserCreated -->
+  <rect x="150" y="280" width="180" height="80" rx="10" ry="10" fill="#4263eb" opacity="0.7" stroke="#364fc7" stroke-width="2"/>
+  <text x="240" y="310" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="white">UserCreated</text>
+  <text x="240" y="330" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="white">{"email":"john@example.com",</text>
+  <text x="240" y="345" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="white">"name":"John Doe"}</text>
+  
+  <!-- Event 2: ProfileUpdated -->
+  <rect x="400" y="280" width="180" height="80" rx="10" ry="10" fill="#4263eb" opacity="0.7" stroke="#364fc7" stroke-width="2"/>
+  <text x="490" y="310" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="white">ProfileUpdated</text>
+  <text x="490" y="330" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="white">{"name":"John Smith"}</text>
+  
+  <!-- Flow Arrow -->
+  <line x1="330" y1="320" x2="400" y2="320" stroke="#212529" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Event 3: Future Event (dotted) -->
+  <rect x="650" y="280" width="180" height="80" rx="10" ry="10" fill="#4263eb" opacity="0.3" stroke="#364fc7" stroke-width="2" stroke-dasharray="5,5"/>
+  <text x="730" y="310" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#364fc7">Future Events</text>
+  <text x="730" y="330" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#364fc7">EmailChanged, etc.</text>
+  
+  <!-- Flow Arrow -->
+  <line x1="580" y1="320" x2="650" y2="320" stroke="#212529" stroke-width="2" stroke-dasharray="5,5" marker-end="url(#arrowhead)"/>
+  
+  <!-- Current State Box -->
+  <rect x="250" y="420" width="400" height="90" rx="5" ry="5" fill="#82c91e" opacity="0.6" stroke="#66a80f" stroke-width="2"/>
+  <text x="450" y="445" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#212529">Current User State</text>
+  <text x="450" y="470" font-family="monospace" font-size="14" text-anchor="middle" fill="#212529">{"email": "john@example.com", "name": "John Smith"}</text>
+  <text x="450" y="490" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#212529">Result of replaying all events</text>
+  
+  <!-- State Generation Arrows -->
+  <line x1="240" y1="360" x2="320" y2="420" stroke="#212529" stroke-width="2" stroke-dasharray="3,3" marker-end="url(#arrowhead)"/>
+  <line x1="490" y1="360" x2="450" y2="420" stroke="#212529" stroke-width="2" stroke-dasharray="3,3" marker-end="url(#arrowhead)"/>
+  <line x1="730" y1="360" x2="580" y2="420" stroke="#212529" stroke-width="2" stroke-dasharray="3,3" marker-end="url(#arrowhead)"/>
+  
+  <!-- Function Description -->
+  <rect x="50" y="540" width="800" height="40" rx="5" ry="5" fill="#fff9db" stroke="#f08c00" stroke-width="2"/>
+  <text x="450" y="565" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#212529">get_current_user_state() - Reads all events for a user and builds the current state by applying events in order</text>
+  
+  <!-- Defs for markers -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#212529" />
+    </marker>
+  </defs>
+</svg>

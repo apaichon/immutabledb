@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 650">
+  <!-- Background -->
+  <rect width="900" height="650" fill="#f8f9fa" rx="10" ry="10" stroke="#dee2e6" stroke-width="2"/>
+  
+  <!-- Title -->
+  <text x="450" y="40" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#212529">Temporal Tables Pattern Flow</text>
+  
+  <!-- Temporal Table Box -->
+  <rect x="50" y="70" width="800" height="120" rx="5" ry="5" fill="#e9ecef" stroke="#adb5bd" stroke-width="2"/>
+  <text x="450" y="95" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#212529">customers_temporal Table</text>
+  
+  <!-- Table Structure -->
+  <rect x="70" y="110" width="760" height="65" rx="3" ry="3" fill="white" stroke="#adb5bd" stroke-width="1"/>
+  <text x="80" y="130" font-family="monospace" font-size="12" fill="#495057">customer_id | name | email | status | valid_from | valid_to | modified_by</text>
+  <text x="80" y="150" font-family="monospace" font-size="12" fill="#495057">PRIMARY KEY (customer_id, valid_from)</text>
+  <text x="80" y="165" font-family="monospace" font-size="12" fill="#6c757d">Note: valid_to default is 'infinity'::TIMESTAMP for current records</text>
+  
+  <!-- Time Periods Diagram -->
+  <rect x="50" y="210" width="800" height="230" rx="5" ry="5" fill="white" stroke="#adb5bd" stroke-width="2"/>
+  <text x="450" y="235" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#212529">Customer Record Timeline (ID: 101)</text>
+  
+  <!-- Timeline -->
+  <line x1="100" y1="310" x2="750" y2="310" stroke="#adb5bd" stroke-width="2"/>
+  <polygon points="750,310 740,305 740,315" fill="#adb5bd"/>
+  
+  <!-- Time Points -->
+  <line x1="150" y1="300" x2="150" y2="320" stroke="#212529" stroke-width="2"/>
+  <text x="150" y="340" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#212529">T₁: Initial Creation</text>
+  
+  <line x1="350" y1="300" x2="350" y2="320" stroke="#212529" stroke-width="2"/>
+  <text x="350" y="340" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#212529">T₂: Email Update</text>
+  
+  <line x1="550" y1="300" x2="550" y2="320" stroke="#212529" stroke-width="2"/>
+  <text x="550" y="340" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#212529">T₃: Status Update</text>
+  
+  <line x1="700" y1="300" x2="700" y2="320" stroke="#212529" stroke-width="2" stroke-dasharray="5,5"/>
+  <text x="700" y="340" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#212529" opacity="0.7">Future</text>
+  
+  <!-- Version Records -->
+  <rect x="150" y="260" width="200" height="25" rx="3" ry="3" fill="#339af0" opacity="0.7"/>
+  <text x="250" y="277" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="white">V1: alice@example.com, active</text>
+  
+  <rect x="350" y="260" width="200" height="25" rx="3" ry="3" fill="#339af0" opacity="0.7"/>
+  <text x="450" y="277" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="white">V2: alice.johnson@example.com, active</text>
+  
+  <rect x="550" y="260" width="150" height="25" rx="3" ry="3" fill="#339af0" opacity="0.7"/>
+  <text x="625" y="277" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="white">V3: premium status</text>
+  
+  <!-- Valid Period Ranges -->
+  <line x1="150" y1="370" x2="350" y2="370" stroke="#fa5252" stroke-width="3"/>
+  <text x="250" y="390" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#fa5252">valid_from: T₁, valid_to: T₂</text>
+  
+  <line x1="350" y1="370" x2="550" y2="370" stroke="#228be6" stroke-width="3"/>
+  <text x="450" y="390" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#228be6">valid_from: T₂, valid_to: T₃</text>
+  
+  <line x1="550" y1="370" x2="700" y2="370" stroke="#40c057" stroke-width="3"/>
+  <text x="625" y="390" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#40c057">valid_from: T₃, valid_to: infinity</text>
+  
+  <!-- Time Travel Query -->
+  <rect x="200" y="430" width="500" height="60" rx="5" ry="5" fill="#fff9db" stroke="#e67700" stroke-width="2"/>
+  <text x="450" y="455" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#212529">Time Travel Query</text>
+  <text x="450" y="475" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#343a40">get_customer_at_time(customer_id, timestamp) → returns record valid at that time</text>
+  
+  <!-- Operation Flow -->
+  <rect x="50" y="510" width="800" height="120" rx="5" ry="5" fill="#d3f9d8" stroke="#2b8a3e" stroke-width="2"/>
+  <text x="450" y="535" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#212529">Update Operation Flow</text>
+  
+  <!-- Update Flow Arrows -->
+  <rect x="100" y="555" width="160" height="30" rx="15" ry="15" fill="#2b8a3e" opacity="0.2"/>
+  <text x="180" y="575" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#212529">1. Find current record</text>
+  
+  <rect x="330" y="555" width="160" height="30" rx="15" ry="15" fill="#2b8a3e" opacity="0.2"/>
+  <text x="410" y="575" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#212529">2. Close current period</text>
+  
+  <rect x="560" y="555" width="160" height="30" rx="15" ry="15" fill="#2b8a3e" opacity="0.2"/>
+  <text x="640" y="575" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#212529">3. Insert new version</text>
+  
+  <text x="100" y="605" font-family="monospace" font-size="12" text-anchor="start" fill="#343a40">SELECT * WHERE valid_to = 'infinity'</text>
+  <text x="330" y="605" font-family="monospace" font-size="12" text-anchor="start" fill="#343a40">UPDATE SET valid_to = CURRENT_TIMESTAMP</text>
+  <text x="560" y="605" font-family="monospace" font-size="12" text-anchor="start" fill="#343a40">INSERT new row, valid_from = CURRENT_TIMESTAMP</text>
+  
+  <line x1="260" y1="570" x2="330" y2="570" stroke="#212529" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+  <line x1="490" y1="570" x2="560" y2="570" stroke="#212529" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+  
+  <!-- Defs for markers -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#212529" />
+    </marker>
+  </defs>
+</svg>
